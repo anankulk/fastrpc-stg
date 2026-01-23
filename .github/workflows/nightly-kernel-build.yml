@@ -12,7 +12,9 @@ on:
 
 jobs:
   build-and-upload:
-    runs-on: ubuntu-latest
+    runs-on: 
+      group: GHA-FastRPC-Stg-SelfHosted-RG
+      labels: [ self-hosted, fastrpc-stg-u2404-x64-large-od-ephem ]
     steps:
       # Checkout fastrpc-image repository to get the Dockerfile
       - name: Checkout fastrpc-image repo for Dockerfile

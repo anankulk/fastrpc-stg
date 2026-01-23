@@ -53,7 +53,7 @@ jobs:
 
       - name: Build workspace
         id: build_workspace
-        uses: qualcomm-linux-stg/fastrpc/.github/actions/build@Nightly-build
+        uses: qualcomm-linux-stg/fastrpc/.github/actions/build@development
         with:
           docker_image: ${{ inputs.docker_image }}
           workspace_path: ${{ steps.sync.outputs.workspace_path }}
