@@ -59,7 +59,7 @@ runs:
         find extracted_kobj -type d
         # Move extracted folder to kobj
         rm -rf kobj
-        mv extracted_kobj kobj
+        mv extracted_kobj/kobj kobj
         ls -la kobj
 
         echo "Package FastRPC firmware files"
