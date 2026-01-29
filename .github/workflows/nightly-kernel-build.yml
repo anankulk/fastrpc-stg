@@ -67,18 +67,19 @@ jobs:
         run: |
           mkdir -p build_output
           if [ -d "${{ github.workspace }}/kobj" ]; then
-            echo "Zipping kobj to build_output/kobj.zip..."
-            zip -r build_output/kobj.zip "${{ github.workspace }}/kobj"
-            echo "Successfully created build_output/kobj.zip."
+            echo "zipping kobj to build_output/kobj.tar.gz..."
+            tar -cvf build_output/kobj.tar -C "${{ github.workspace }}" kobj
+            gzip -9 build_output/kobj.tar
+            echo "Successfully created build_output/kobj.tar.gz"
           else
             echo "Error: kobj directory not found."
             exit 1
           fi
 
       - name: Upload zipped kobj as artifact to aws S3 bucket
-        uses: qualcomm-linux-stg/fastrpc/.github/actions/aws_s3_helper@Nightly-build
+        uses: qualcomm-linux-stg/fastrpc/.github/actions/aws_s3_helper@development
         with:
           s3_bucket: qli-stg-fastrpc-gh-artifacts
-          local_file: ${{ github.workspace }}/build_output/kobj.zip
+          local_file: ${{ github.workspace }}/build_output/kobj.tar.gz
           mode: single-upload
           deviceTree: false
