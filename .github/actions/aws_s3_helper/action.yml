@@ -103,11 +103,11 @@ runs:
             | grep -i 'kobj'
 
             if [[ -d "${{ inputs.download_location }}" ]]; then
-              aws s3 cp "s3://${{ inputs.s3_bucket }}/${{ env.KERNEL_UPLOAD_LOCATION }}${{ inputs.download_file }}" "${{ inputs.download_location }}"
+              aws s3 cp "s3://${{ inputs.s3_bucket }}/${{ env.KERNEL_UPLOAD_LOCATION }}/${{ inputs.download_file }}" "${{ inputs.download_location }}"
             else
               # Treat as a file path; create parent directory if needed
               mkdir -p "$(dirname "${{ inputs.download_location }}")"
-              aws s3 cp "s3://${{ inputs.s3_bucket }}/${{ env.KERNEL_UPLOAD_LOCATION }}${{ inputs.download_file }}" "${{ inputs.download_location }}"
+              aws s3 cp "s3://${{ inputs.s3_bucket }}/${{ env.KERNEL_UPLOAD_LOCATION }}/${{ inputs.download_file }}" "${{ inputs.download_location }}"
             fi
             echo "Downloaded ${S3_URI} to ${DOWNLOAD_LOCATION}"
             ;;
