@@ -7,7 +7,7 @@ name: Nightly Build kernel and upload artifacts
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+    - cron: '0 0 * * 0'  # Runs daily at midnight UTC
   workflow_dispatch:     # Allows manual trigger
 
 jobs:
@@ -27,11 +27,13 @@ jobs:
       - name: Build fastrpc docker image
         run: |
           docker build -t fastrpc-image:latest -f Dockerfile .
+
       - name: Configure git
         shell: bash
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+
       - name: Clone kernel repository
         shell: bash
         run: |
@@ -42,6 +44,7 @@ jobs:
           git fetch origin
           git checkout qcom-next
           echo "Successfully checked out qcom-next branch."
+
       - name: Build kernel
         shell: bash
         run: |
@@ -82,4 +85,5 @@ jobs:
           s3_bucket: qli-stg-fastrpc-gh-artifacts
           local_file: ${{ github.workspace }}/build_output/kobj.tar.gz
           mode: single-upload
+          artifacts: kernel-artifact/kobj.tar.gz 
           deviceTree: false

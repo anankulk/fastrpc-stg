@@ -43,7 +43,7 @@ runs:
       uses: qualcomm-linux-stg/fastrpc/.github/actions/aws_s3_helper@development
       with:
         s3_bucket: qli-stg-fastrpc-gh-artifacts
-        download_file: kobj.tar.gz 
+        artifacts:  kernel-artifact/kobj.tar.gz 
         deviceTree: false
         download_location: ${{ inputs.workspace_path }}
         mode: download
