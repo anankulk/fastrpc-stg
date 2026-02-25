@@ -73,7 +73,6 @@ runs:
         cd ${{ inputs.workspace_path }}/artifacts/
         cd ramdisk_fastrpc
         find . | cpio -o -H newc > ../ramdisk_fastrpc.cpio
-        ln -s /usr/lib/firmware /lib/firmware
         cd ..
         gzip -9 ramdisk_fastrpc.cpio
         mv ramdisk_fastrpc.cpio.gz ramdisk_fastrpc.gz

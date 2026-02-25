@@ -95,6 +95,8 @@ runs:
           # Copy the contents of the qcom target directory
           # Use trailing slashes to copy contents, not the directory itself
           cp -rf "${LINUX_FIRMWARE_QCOM_PATH}/"* "${{ github.workspace }}/firmware_dir/usr/lib/firmware/qcom/${LINUX_FIRMWARE}/"
+          mkdir -p ${{ github.workspace }}/firmware_dir/lib
+          ln -s ${{ github.workspace }}/firmware_dir/usr/lib/firmware ${{ github.workspace }}/firmware_dir/lib/firmware
           echo "Copied QCOM firmware from '${LINUX_FIRMWARE_QCOM_PATH}' to '${{ github.workspace }}/firmware_dir/usr/lib/firmware/qcom/${LINUX_FIRMWARE}/' successfully!"
         fi
 
