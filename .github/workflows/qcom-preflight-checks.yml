@@ -1,7 +1,7 @@
 name: Qualcomm Preflight Checks
 on:
   pull_request_target:
-    branches: [ development ]
+    branches: [ ABI_checker ]
   push:
     branches: [ development ]
   workflow_dispatch:
