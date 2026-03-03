@@ -21,6 +21,6 @@ jobs:
         enable-commit-email-check: true        # default: true
         enable-dependency-review: true         # default: true
         enable-armor-checkers: true
-        armor-checker-options: '{"build-script":"ci/build.sh","runs-on":{"group":"GHA-fastrpc-Prd-SelfHosted-RG","labels":["self-hosted","fastrpc-prd-u2404-x64-large-od-ephem"]}}'
+        armor-checker-options: '{"build-script":"ci/build.sh","runs-on":{"group":"GHA-FastRPC-Stg-SelfHosted-RG","labels":["self-hosted","fastrpc-stg-u2404-x64-large-od-ephem"]}}'
     secrets:
       SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
