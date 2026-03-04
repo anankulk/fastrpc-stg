@@ -11,7 +11,7 @@ branches:
           - inc/rpcmem.h
 
 abi_checks:
-  - path: "src/.libs"
+  - path: src/.libs
     include_globs: ["libadsprpc.so", "libcdsprpc.so", "libsdsprpc.so"]
     public_headers:
       - inc/adsp_default_listener1.h
