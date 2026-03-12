@@ -1,0 +1,95 @@
+name: Teams Notification (PRs + Issues)
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Teams webhook secret is set
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          if [ -z "$TEAMS_WEBHOOK_URL" ]; then
+            echo "ERROR: Secret TEAMS_WEBHOOK_URL is not set in this repository."
+            echo "Set it at: Settings -> Secrets and variables -> Actions -> New repository secret"
+            exit 1
+          fi
+
+      - name: Build Adaptive Card payload
+        id: payload
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "issues" ]; then
+            EVENT_TYPE="New Issue"
+            TITLE="$ISSUE_TITLE"
+            URL="$ISSUE_URL"
+          else
+            EVENT_TYPE="New Pull Request"
+            TITLE="$PR_TITLE"
+            URL="$PR_URL"
+          fi
+
+          # Use jq to safely escape strings for JSON
+          PAYLOAD=$(jq -n \
+            --arg eventType "$EVENT_TYPE" \
+            --arg title "$TITLE" \
+            --arg url "$URL" \
+            --arg repo "$REPO" \
+            --arg actor "$ACTOR" \
+            '{
+              type: "message",
+              attachments: [
+                {
+                  contentType: "application/vnd.microsoft.card.adaptive",
+                  content: {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    type: "AdaptiveCard",
+                    version: "1.4",
+                    body: [
+                      { type: "TextBlock", size: "Medium", weight: "Bolder", text: $eventType },
+                      { type: "TextBlock", text: $title, wrap: true },
+                      {
+                        type: "FactSet",
+                        facts: [
+                          { title: "Repo", value: $repo },
+                          { title: "Author", value: $actor }
+                        ]
+                      }
+                    ],
+                    actions: [
+                      { type: "Action.OpenUrl", title: "View on GitHub", url: $url }
+                    ]
+                  }
+                }
+              ]
+            }')
+
+          echo "$PAYLOAD" > payload.json
+          echo "payload_file=payload.json" >> "$GITHUB_OUTPUT"
+
+      - name: Post to Teams
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          curl -sS -X POST \
+            -H "Content-Type: application/json" \
+            --data-binary @payload.json \
+            "$TEAMS_WEBHOOK_URL"
